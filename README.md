@@ -1,13 +1,19 @@
-# Azure - Templates
+# Fortinet Microsoft Azure templates
 
-This project includes a set of Azure Templates for getting you started in Azure with Fortinet.
+Fortinet offers different products running on Microsoft Azure. This project includes a set of templates (ARM and Terraform) to get you started.
 
-https://www.fortinet.com/azure/
+<https://www.fortinet.com/azure/>
+
+- [FortiGate](FortiGate/)
+- [FortiManager](FortiManager/)
+- [FortiAnalyzer](FortiAnalyzer/)
+- [FortiWeb](FortiWeb/FortiWeb-HA)
 
 ## Support
 
-Please contact your Fortinet representation for any comments, questions, considerations, and/or concerns.
+Fortinet-provided scripts in this and other GitHub projects do not fall under the regular Fortinet technical support scope and are not supported by FortiCare Support Services.
+For direct issues, please refer to the [Issues](https://github.com/fortinet/azure-templates/issues) tab of this GitHub project.
 
 ## License
 
-[License](./LICENSE) © Fortinet Technologies. All rights reserved.
+[License](LICENSE) © Fortinet Technologies. All rights reserved.

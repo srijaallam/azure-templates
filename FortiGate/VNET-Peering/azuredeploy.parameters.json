@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "adminUsername": {
@@ -8,13 +8,13 @@
         "adminPassword": {
             "value": "## TO BE DEFINED ##"
         },
-        "FortiGateNamePrefix": {
+        "fortiGateNamePrefix": {
             "value": "## TO BE DEFINED ##"
         },
-        "FortiGateImageSKU": {
+        "fortiGateImageSKU": {
             "value": "fortinet_fg-vm"
         },
-        "FortiGateImageVersion": {
+        "fortiGateImageVersion": {
             "value": "latest"
         },
         "instanceType": {
@@ -50,9 +50,6 @@
         "publicIP3ResourceGroup": {
             "value": ""
         },
-        "publicIPAddressType": {
-            "value": "Static"
-        },
         "vnetNewOrExisting": {
             "value": "new"
         },
@@ -63,7 +60,7 @@
             "value": ""
         },
         "vnetAddressPrefix": {
-            "value": "172.16.136.0/26"
+            "value": "172.16.136.0/22"
         },
         "subnet1Name": {
             "value": "ExternalSubnet"
@@ -111,13 +108,13 @@
             "value": ""
         },
         "subnet1Spoke1Name": {
-            "value": "Spoke1Subnet"
+            "value": "SPOKE1Subnet"
         },
         "subnet1Spoke1Prefix": {
             "value": "172.16.140.0/26"
         },
-        "vnetAddressPrefixSpoke2": {
-            "value": "172.16.142.0/24"
+        "vnetAddressPrefixSpoke1": {
+            "value": "172.16.140.0/24"
         },
         "vnetNewOrExistingSpoke2": {
             "value": "new"
@@ -128,18 +125,23 @@
         "vnetResourceGroupSpoke2": {
             "value": ""
         },
-        "vnetAddressPrefixSpoke1": {
-            "value": "172.16.140.0/24"
+        "vnetAddressPrefixSpoke2": {
+            "value": "172.16.142.0/24"
         },
         "subnet1Spoke2Name": {
-            "value": "Spoke1Subnet"
+            "value": "SPOKE2Subnet"
         },
         "subnet1Spoke2Prefix": {
             "value": "172.16.142.0/26"
         },
-        "FortinetTags": {
+        "location": {
+            "value": "[resourceGroup().location]"
+        },
+        "fortinetTags": {
             "value": {
-                "provider": "6EB3B02F-50E5-4A3E-8CB8-2E129258317D"
+                "publisher": "Fortinet",
+                "template": "VNET Peering",
+                "provider": "6EB3B02F-50E5-4A3E-8CB8-2E12925831AB-VNETPeering"
             }
         }
     }
