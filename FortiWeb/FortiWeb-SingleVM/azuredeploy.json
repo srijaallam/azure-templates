@@ -192,7 +192,7 @@
   "resources": [
     {
       "apiVersion": "2018-05-01",
-	  "name": "FortiWeb",
+	    "name": "FortiWeb",
       "type": "Microsoft.Resources/deployments",
       "properties":{
        "mode": "Incremental",
