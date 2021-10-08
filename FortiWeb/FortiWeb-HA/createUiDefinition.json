@@ -300,7 +300,6 @@
       }
     ],
     "outputs": {
-      "location": "[location()]",
       "vmNamePrefix": "[basics('namePrefix')]",
       "imageVersion": "[basics('imageVersion')]",
       "adminUserName": "[basics('adminUserName')]",
