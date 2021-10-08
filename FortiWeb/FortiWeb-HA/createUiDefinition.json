@@ -1,1104 +1,336 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
+  "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+  "handler": "Microsoft.Compute.MultiVm",
+  "version": "0.1.2-preview",
   "parameters": {
-    "location": {
-      "type": "string",
-      "metadata": {
-        "description": "location"
-      }
-    },
-    "vmNamePrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "Name prefix for FortiWeb set VM instances."
-      }
-    },
-    "vmSku": {
-      "type": "string",
-      "metadata": {
-        "description": "Size of VM in the FortiWeb set VM instances."
-      }
-    },
-    "adminUserName": {
-      "type": "string",
-      "metadata": {
-        "description": "Admin username for the FortiWeb instance."
-      }
-    },
-    "authenticationType": {
-      "type": "string",
-      "defaultValue": "password",
-      "allowedValues": [
-        "password",
-        "sshPublicKey"
-      ],
-      "metadata": {
-        "description": "Choose a password or ssh public key for the Admin username used to access virtual machines"
-      }
-    },
-    "adminPassword": {
-      "type": "securestring",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Admin password"
-      }
-    },
-    "sshPublicKey": {
-      "type": "securestring",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Admin ssh public key"
-      }
-    },
-    "LBPubIPNewOrExisting": {
-      "defaultValue": "new",
-      "type": "string",
-      "allowedValues": [
-        "new",
-        "existing"
-      ],
-      "metadata": {
-        "description": "Identify whether to use a public IP and if so whether it is new or previously created"
-      }
-    },
-    "LBPubIPName": {
-      "defaultValue": "LoadBalancerPubIP",
-      "type": "string",
-      "metadata": {
-        "description": "Name of the public IP address object"
-      }
-    },
-    "LBPubIPType": {
-      "type": "string",
-      "defaultValue": "Static",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
-      "metadata": {
-        "description": "Type of public IP address - A 'dynamic' address will change during reboot or periods of inactivity"
-      }
-    },
-    "LBPubIPSku": {
-      "defaultValue": "Basic",
-      "type": "string",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "The public IP address SKU"
-      }
-    },
-    "LBPubIPRG": {
-      "defaultValue": "[resourceGroup().name]",
-      "type": "string",
-      "metadata": {
-        "description": "Load Balancer Public IP Resource Group"
-      }
-    },
-    "VM1PubIPNewOrExisting": {
-      "defaultValue": "new",
-      "type": "string",
-      "allowedValues": [
-        "new",
-        "existing"
-      ],
-      "metadata": {
-        "description": "Identify whether to use a public IP and if so whether it is new or previously created"
-      }
-    },
-    "VM1PubIPName": {
-      "defaultValue": "VM1PubIP",
-      "type": "string",
-      "metadata": {
-        "description": "Public IP address name for the VM1"
-      }
-    },
-    "VM1PubIPType": {
-      "type": "string",
-      "defaultValue": "Static",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
-      "metadata": {
-        "description": "Type of public IP address - A 'dynamic' address will change during reboot or periods of inactivity"
-      }
-    },
-    "VM1PubIPSku": {
-      "defaultValue": "Basic",
-      "type": "string",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "The public IP address SKU"
-      }
-    },
-    "VM1PubIPRG": {
-      "defaultValue": "[resourceGroup().name]",
-      "type": "string",
-      "metadata": {
-        "description": "Resource Group containing the public IP - or new resource group from above (if new public IP)"
-      }
-    },
-    "VM2PubIPNewOrExisting": {
-      "defaultValue": "new",
-      "type": "string",
-      "allowedValues": [
-        "new",
-        "existing"
-      ],
-      "metadata": {
-        "description": "Identify whether to use a public IP and if so whether it is new or previously created"
-      }
-    },
-    "VM2PubIPName": {
-      "defaultValue": "VM2PubIP",
-      "type": "string",
-      "metadata": {
-        "description": "Public IP address name for the VM2"
-      }
-    },
-    "VM2PubIPType": {
-      "type": "string",
-      "defaultValue": "Static",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
-      "metadata": {
-        "description": "Type of public IP address - A 'dynamic' address will change during reboot or periods of inactivity"
-      }
-    },
-    "VM2PubIPSku": {
-      "defaultValue": "Basic",
-      "type": "string",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "The public IP address SKU"
-      }
-    },
-    "VM2PubIPRG": {
-      "defaultValue": "[resourceGroup().name]",
-      "type": "string",
-      "metadata": {
-        "description": "Resource Group containing the public IP - or new resource group from above (if new public IP)"
-      }
-    },
-    "vnetNewOrExisting": {
-      "defaultValue": "new",
-      "allowedValues": [
-        "new",
-        "existing"
-      ],
-      "type": "string",
-      "metadata": {
-        "description": "Identify whether to use a new or existing vnet."
-      }
-    },
-    "virtualNetResourceGroup": {
-      "defaultValue": "[resourceGroup().name]",
-      "type": "string",
-      "metadata": {
-        "description": "Resource group name of the existing virtual network, only valid when the 'vnet New Or Existing' value is 'existing'."
-      }
-    },
-    "virtualNetName": {
-      "type": "string",
-      "metadata": {
-        "description": "Name of the Azure virtual network."
-      }
-    },
-    "vnetAddressPrefix": {
-      "defaultValue": "",
-      "type": "string",
-      "metadata": {
-        "description": "Virtual Network Address prefix"
-      }
-    },
-    "Subnet1Name": {
-      "defaultValue": "",
-      "type": "string",
-      "metadata": {
-        "description": "Subnet Name"
-      }
-    },
-    "Subnet1Prefix": {
-      "defaultValue": "",
-      "type": "string",
-      "metadata": {
-        "description": "Outside Subnet Prefix"
-      }
-    },
-    "Subnet2Name": {
-      "defaultValue": "",
-      "type": "string",
-      "metadata": {
-        "description": "Subnet Name"
-      }
-    },
-    "Subnet2Prefix": {
-      "defaultValue": "",
-      "type": "string",
-      "metadata": {
-        "description": "Inside Subnet Prefix"
-      }
-    },
-    "imageVersion": {
-      "defaultValue": "BYOL634",
-      "type": "string",
-      "allowedValues": [
-        "BYOL602",
-        "PAYG602",
-        "BYOL610",
-        "PAYG610",
-        "BYOL621",
-        "PAYG621",
-        "BYOL632",
-        "PAYG632",
-        "BYOL634",
-        "PAYG634"
-      ],
-      "metadata": {
-        "description": "BYOL licenses must be purchased through a Fortinet Channel Partner separately. PAYG licensing is billed at an additional hourly rate through your Azure subscription"
-      }
-    }
-  },
-  "variables": {
-    "vmName1": "[concat(parameters('vmNamePrefix'), '-VM1')]",
-    "vmName2": "[concat(parameters('vmNamePrefix'), '-VM2')]",
-    "loadBalancerId": "[resourceId('Microsoft.Network/loadBalancers', 'myLoadBalancer')]",
-    "subnet1ID": "[resourceId(parameters('virtualNetResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetName'), parameters('Subnet1Name'))]",
-    "subnet2ID": "[resourceId(parameters('virtualNetResourceGroup'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetName'), parameters('Subnet2Name'))]",
-    "adminPasswordBySSHKey": "[concat('Fwb123#', uniqueString(parameters('sshPublicKey')))]",
-    "lbPublicIPAddressId": "[resourceId(parameters('LBPubIPRG'), 'Microsoft.Network/publicIPAddresses', parameters('LBPubIPName'))]",
-    "publicIPAddress1": {
-      "id": "[resourceId(parameters('VM1PubIPRG'), 'Microsoft.Network/publicIPAddresses', parameters('VM1PubIPName'))]"
-    },
-    "publicIPAddress2": {
-      "id": "[resourceId(parameters('VM2PubIPRG'), 'Microsoft.Network/publicIPAddresses', parameters('VM2PubIPName'))]"
-    },
-    "imageType": "[substring(parameters('imageVersion'), 0, 4)]",
-    "linuxConfigSSH": {
-      "publicKeys": [
-        {
-          "keyData": "[parameters('sshPublicKey')]",
-          "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]"
-        }
-      ]
-    },
-    "vmPlanMap": {
-      "BYOL": {
-        "name": "fortinet_fw-vm",
-        "product": "fortinet_fortiweb-vm_v5",
-        "publisher": "fortinet"
-      },
-      "PAYG": {
-        "name": "fortinet_fw-vm_payg",
-        "product": "fortinet_fortiweb-vm_v5",
-        "publisher": "fortinet"
-      }
-    },
-    "imageReferenceMap": {
-      "BYOL602": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm",
-        "version": "6.0.2"
-      },
-      "PAYG602": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm_payg",
-        "version": "6.0.2"
-      },
-      "BYOL610": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm",
-        "version": "6.1.0"
-      },
-      "PAYG610": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm_payg",
-        "version": "6.1.0"
-      },
-      "BYOL621": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm",
-        "version": "6.2.1"
-      },
-      "PAYG621": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm_payg",
-        "version": "6.2.1"
-      },
-      "BYOL632": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm",
-        "version": "6.3.2"
-      },
-      "PAYG632": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm_payg",
-        "version": "6.3.2"
-      },
-      "BYOL634": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm",
-        "version": "6.3.4"
-      },
-      "PAYG634": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm_payg",
-        "version": "6.3.4"
-      },
-      "BYOL6311": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm",
-        "version": "6.3.11"
-      },
-      "PAYG6311": {
-        "publisher": "fortinet",
-        "offer": "fortinet_fortiweb-vm_v5",
-        "sku": "fortinet_fw-vm_payg",
-        "version": "6.3.11"
-      }
-    }
-  },
-  "resources": [
-    {
-      "apiVersion": "2019-05-01",
-	  "name": "FortiWeb",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "",
-          "contentVersion": "1.0.0.0",
-          "resources": []
+    "config": {
+      "basics": {
+        "resourceGroup": {
+          "allowExisting": true
         }
       }
     },
-    {
-      "type": "Microsoft.Compute/availabilitySets",
-      "sku": {
-        "name": "Aligned"
-      },
-      "name": "myAvailabilitySet",
-      "apiVersion": "2018-06-01",
-      "location": "[parameters('location')]",
-      "properties": {
-        "platformUpdateDomainCount": 2,
-        "platformFaultDomainCount": 2
-      },
-      "dependsOn": []
-    },
-    {
-      "condition": "[equals(parameters('LBPubIPNewOrExisting'), 'new')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[parameters('LBPubIPName')]",
-      "apiVersion": "2018-08-01",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "[parameters('LBPubIPSku')]"
-      },
-      "properties": {
-        "publicIPAllocationMethod": "[parameters('LBPubIPType')]"
-      },
-      "dependsOn": []
-    },
-    {
-      "condition": "[equals(parameters('VM1PubIPNewOrExisting'), 'new')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[parameters('VM1PubIPName')]",
-      "apiVersion": "2018-08-01",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "[parameters('VM1PubIPSku')]"
-      },
-      "properties": {
-        "publicIPAllocationMethod": "[parameters('VM1PubIPType')]"
-      },
-      "dependsOn": []
-    },
-    {
-      "condition": "[equals(parameters('VM2PubIPNewOrExisting'), 'new')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[parameters('VM2PubIPName')]",
-      "apiVersion": "2018-08-01",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "[parameters('VM2PubIPSku')]"
-      },
-      "properties": {
-        "publicIPAllocationMethod": "[parameters('VM2PubIPType')]"
-      },
-      "dependsOn": []
-    },
-    {
-      "type": "Microsoft.Network/networkInterfaces",
-      "name": "myNic1",
-      "apiVersion": "2018-08-01",
-      "location": "[parameters('location')]",
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[variables('subnet1ID')]"
-              },
-              "primary": true,
-              "privateIPAddressVersion": "IPv4",
-              "publicIPAddress": "[variables('publicIPAddress1')]",
-              "loadBalancerBackendAddressPools": [
-                {
-                  "id": "[concat(variables('loadBalancerId'), '/backendAddressPools/myBackEndPool')]"
-                }
-              ],
-              "loadBalancerInboundNatRules": [
-                {
-                  "id": "[concat(variables('loadBalancerId'), '/inboundNatRules/lbinboundnatrulehttps1')]"
-                },
-                {
-                  "id": "[concat(variables('loadBalancerId'), '/inboundNatRules/lbinboundnatrulessh1')]"
-                }
-              ]
-            }
-          }
+    "resourceTypes": [
+            "microsoft.resources/resourcegroups"
         ],
-        "enableAcceleratedNetworking": false,
-        "enableIPForwarding": false
+    "basics": [
+      {
+        "name": "namePrefix",
+        "type": "Microsoft.Common.TextBox",
+        "label": "FortiWeb set name prefix",
+        "defaultValue": "",
+        "toolTip": "This will be used to name the pair of FortiWeb virtual appliances.",
+        "constraints": {
+          "required": true,
+          "regex": "^[a-z0-9A-Z]{1,15}$",
+          "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1-15 characters long."
+        }
       },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetName'))]",
-        "[resourceId('Microsoft.Network/loadBalancers', 'myLoadBalancer')]",
-        "[parameters('VM1PubIPName')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Network/networkInterfaces",
-      "name": "myNic2",
-      "apiVersion": "2018-08-01",
-      "location": "[parameters('location')]",
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "subnet": {
-                "id": "[variables('subnet1ID')]"
-              },
-              "primary": true,
-              "privateIPAddressVersion": "IPv4",
-              "publicIPAddress": "[variables('publicIPAddress2')]",
-              "loadBalancerBackendAddressPools": [
-                {
-                  "id": "[concat(variables('loadBalancerId'), '/backendAddressPools/myBackEndPool')]"
-                }
-              ],
-              "loadBalancerInboundNatRules": [
-                {
-                  "id": "[concat(variables('loadBalancerId'), '/inboundNatRules/lbinboundnatrulehttps2')]"
-                },
-                {
-                  "id": "[concat(variables('loadBalancerId'), '/inboundNatRules/lbinboundnatrulessh2')]"
-                }
-              ]
-            }
-          }
-        ],
-        "enableAcceleratedNetworking": false,
-        "enableIPForwarding": false
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetName'))]",
-        "[resourceId('Microsoft.Network/loadBalancers', 'myLoadBalancer')]",
-        "[parameters('VM2PubIPName')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Network/networkInterfaces",
-      "name": "myNic3",
-      "apiVersion": "2018-08-01",
-      "location": "[parameters('location')]",
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "privateIPAddressVersion": "IPv4",
-              "subnet": {
-                "id": "[variables('subnet2ID')]"
-              }
-            }
-          }
-        ],
-        "enableAcceleratedNetworking": false,
-        "enableIPForwarding": false
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetName'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Network/networkInterfaces",
-      "name": "myNic4",
-      "apiVersion": "2018-08-01",
-      "location": "[parameters('location')]",
-      "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "privateIPAddressVersion": "IPv4",
-              "subnet": {
-                "id": "[variables('subnet2ID')]"
-              }
-            }
-          }
-        ],
-        "enableAcceleratedNetworking": false,
-        "enableIPForwarding": false
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetName'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName1')]",
-      "apiVersion": "2018-06-01",
-      "location": "[parameters('location')]",
-      "plan": "[variables('vmPlanMap')[variables('imageType')]]",
-      "properties": {
-        "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets', 'myAvailabilitySet')]"
-        },
-        "hardwareProfile": {
-          "vmSize": "[parameters('vmSku')]"
-        },
-        "storageProfile": {
-          "imageReference": "[variables('imageReferenceMap')[parameters('imageVersion')]]",
-          "osDisk": {
-            "osType": "Linux",
-            "createOption": "FromImage"
-          },
-          "dataDisks": [
+      {
+        "name": "imageVersion",
+        "type": "Microsoft.Common.OptionsGroup",
+        "label": "Version",
+        "defaultValue": "FortiWeb 6.3.11 (BYOL)",
+        "toolTip": "BYOL licenses must be purchased through a Fortinet Channel Partner separately. PAYG licensing is billed at an additional hourly rate through your Azure subscription.",
+        "constraints": {
+          "allowedValues": [
             {
-              "diskSizeGB": 30,
-              "lun": 0,
-              "createOption": "Empty"
-            }
-          ]
-        },
-        "osProfile": {
-          "computerName": "[variables('vmName1')]",
-          "adminUsername": "[parameters('adminUserName')]",
-          "adminPassword": "[if(equals(parameters('authenticationType'), 'password'), parameters('adminPassword'), variables('adminPasswordBySSHKey'))]",
-          "linuxConfiguration": {
-            "disablePasswordAuthentication": false,
-            "ssh": "[if(equals(parameters('authenticationType'), 'sshPublicKey'), variables('linuxConfigSSH'), json('null'))]"
-          },
-          "secrets": []
-        },
-        "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'myNic1')]",
-              "properties": {
-                "primary": true
-              }
+              "label": "FortiWeb 6.3.11 (BYOL)",
+              "value": "BYOL6311"
             },
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'myNic3')]",
-              "properties": {
-                "primary": false
-              }
-            }
-          ]
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/availabilitySets', 'myAvailabilitySet')]",
-        "[resourceId('Microsoft.Network/networkInterfaces', 'myNic1')]",
-        "[resourceId('Microsoft.Network/networkInterfaces', 'myNic3')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName2')]",
-      "apiVersion": "2018-06-01",
-      "location": "[parameters('location')]",
-      "plan": "[variables('vmPlanMap')[variables('imageType')]]",
-      "properties": {
-        "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets', 'myAvailabilitySet')]"
-        },
-        "hardwareProfile": {
-          "vmSize": "[parameters('vmSku')]"
-        },
-        "storageProfile": {
-          "imageReference": "[variables('imageReferenceMap')[parameters('imageVersion')]]",
-          "osDisk": {
-            "osType": "Linux",
-            "createOption": "FromImage"
-          },
-          "dataDisks": [
+              "label": "FortiWeb 6.3.11 (PAYG)",
+              "value": "PAYG6311"
+            },
+
             {
-              "diskSizeGB": 30,
-              "lun": 0,
-              "createOption": "Empty"
-            }
-          ]
-        },
-        "osProfile": {
-          "computerName": "[variables('vmName2')]",
-          "adminUsername": "[parameters('adminUserName')]",
-          "adminPassword": "[if(equals(parameters('authenticationType'), 'password'), parameters('adminPassword'), variables('adminPasswordBySSHKey'))]",
-          "linuxConfiguration": {
-            "disablePasswordAuthentication": false,
-            "ssh": "[if(equals(parameters('authenticationType'), 'sshPublicKey'), variables('linuxConfigSSH'), json('null'))]"
-          },
-          "secrets": []
-        },
-        "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'myNic2')]",
-              "properties": {
-                "primary": true
-              }
+              "label": "FortiWeb 6.3.4 (BYOL)",
+              "value": "BYOL634"
             },
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'myNic4')]",
-              "properties": {
-                "primary": false
-              }
+              "label": "FortiWeb 6.3.4 (PAYG)",
+              "value": "PAYG634"
+            },
+            {
+              "label": "FortiWeb 6.3.2 (BYOL)",
+              "value": "BYOL632"
+            },
+            {
+              "label": "FortiWeb 6.3.2 (PAYG)",
+              "value": "PAYG632"
+            },
+            {
+              "label": "FortiWeb 6.2.1 (BYOL)",
+              "value": "BYOL621"
+            },
+            {
+              "label": "FortiWeb 6.2.1 (PAYG)",
+              "value": "PAYG621"
+            },
+            {
+              "label": "FortiWeb 6.1.0 (BYOL)",
+              "value": "BYOL610"
+            },
+            {
+              "label": "FortiWeb 6.1.0 (PAYG)",
+              "value": "PAYG610"
+            },
+            {
+              "label": "FortiWeb 6.0.2 (BYOL)",
+              "value": "BYOL602"
+            },
+            {
+              "label": "FortiWeb 6.0.2 (PAYG)",
+              "value": "PAYG602"
             }
           ]
         }
       },
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/availabilitySets', 'myAvailabilitySet')]",
-        "[resourceId('Microsoft.Network/networkInterfaces', 'myNic2')]",
-        "[resourceId('Microsoft.Network/networkInterfaces', 'myNic4')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Network/loadBalancers",
-      "sku": {
-        "name": "Basic",
-        "tier": "Regional"
+      {
+        "name": "adminUserName",
+        "type": "Microsoft.Compute.UserNameTextBox",
+        "label": "FortiWeb administrative username",
+        "defaultValue": "",
+        "toolTip": "Admin username for the FortiWeb instance. Must not be 'admin' nor 'root'.",
+        "constraints": {
+          "required": true,
+          "regex": "^(?!(?:adm|admin|root)$)[A-Za-z0-9_]+$",
+          "validationMessage": "Usernames must not include reserved words."
+        },
+        "osPlatform": "Linux"
       },
-      "name": "myLoadBalancer",
-      "apiVersion": "2018-08-01",
-      "location": "[parameters('location')]",
-      "properties": {
-        "frontendIPConfigurations": [
+      {
+        "name": "adminPasswd",
+        "type": "Microsoft.Compute.CredentialsCombo",
+        "label": {
+          "authenticationType": "Authentication type",
+          "password": "Password",
+          "confirmPassword": "Confirm password",
+          "sshPublicKey": "SSH public key"
+        },
+        "toolTip": {
+          "authenticationType": "Choose Authentication type Password or PublicKey(SSH).",
+          "password": "Enter the password for the specified user name.",
+          "sshPublicKey": "Copy Public key into field."
+        },
+        "constraints": {
+          "required": true
+        },
+        "options": {
+          "hideConfirmation": false
+        },
+        "osPlatform": "Linux"
+      }
+    ],
+    "steps": [
+      {
+        "name": "clusterSettingsStep",
+        "label": "Network and Instance Settings",
+        "subLabel": {
+          "preValidation": "Required",
+          "postValidation": "Done"
+        },
+        "bladeTitle": "Network and Instance Settings",
+        "elements": [
           {
-            "name": "myFrontEnd",
-            "properties": {
-              "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[variables('lbPublicIPAddressId')]"
+            "name": "virtualNetwork",
+            "type": "Microsoft.Network.VirtualNetworkCombo",
+            "label": {
+              "virtualNetwork": "Virtual network",
+              "subnets": "Subnets"
+            },
+            "toolTip": {
+              "virtualNetwork": "Create a new Virtual Network or use an existing one",
+              "subnets": "Choose the Subnet for FortiWeb nodes. If choosing an existing Virtual Network, the Subnets to use will need to exist beforehand; Creating a new subnet in an existing Virtual Network is not supported"
+            },
+            "defaultValue": {
+              "name": "FortiWebVNet",
+              "addressPrefixSize": "/20"
+            },
+            "constraints": {
+              "minAddressPrefixSize": "/28"
+            },
+            "options": {
+              "hideExisting": false
+            },
+            "subnets": {
+              "subnet1": {
+                "label": "Outside Subnet Prefix",
+                "defaultValue": {
+                  "name": "OutsideSubnet",
+                  "addressPrefixSize": "/24"
+                },
+                "constraints": {
+                  "minAddressPrefixSize": "/29",
+                  "minAddressCount": 2,
+                  "requireContiguousAddresses": false
+                }
+              },
+              "subnet2": {
+                "label": "Inside Subnet Prefix",
+                "defaultValue": {
+                  "name": "InsideSubnet",
+                  "addressPrefixSize": "/24"
+                },
+                "constraints": {
+                  "minAddressPrefixSize": "/29",
+                  "minAddressCount": 2,
+                  "requireContiguousAddresses": false
+                }
               }
             }
-          }
-        ],
-        "backendAddressPools": [
-          {
-            "name": "myBackEndPool"
-          }
-        ],
-        "loadBalancingRules": [
-          {
-            "name": "LBRuleHttp",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(variables('loadBalancerId'), '/frontendIPConfigurations/myFrontEnd')]"
-              },
-              "frontendPort": 80,
-              "backendPort": 80,
-              "enableFloatingIP": true,
-              "idleTimeoutInMinutes": 4,
-              "protocol": "Tcp",
-              "enableTcpReset": false,
-              "loadDistribution": "Default",
-              "backendAddressPool": {
-                "id": "[concat(variables('loadBalancerId'), '/backendAddressPools/myBackEndPool')]"
-              },
-              "probe": {
-                "id": "[concat(variables('loadBalancerId'), '/probes/myHealthProbeHttp')]"
-              }
-            }
           },
           {
-            "name": "LBRuleHttps",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(variables('loadBalancerId'), '/frontendIPConfigurations/myFrontEnd')]"
-              },
-              "frontendPort": 443,
-              "backendPort": 443,
-              "enableFloatingIP": true,
-              "idleTimeoutInMinutes": 4,
-              "protocol": "Tcp",
-              "enableTcpReset": false,
-              "loadDistribution": "Default",
-              "backendAddressPool": {
-                "id": "[concat(variables('loadBalancerId'), '/backendAddressPools/myBackEndPool')]"
-              },
-              "probe": {
-                "id": "[concat(variables('loadBalancerId'), '/probes/myHealthProbeHttps')]"
-              }
-            }
-          }
-        ],
-        "probes": [
-          {
-            "name": "myHealthProbeHttp",
-            "properties": {
-              "protocol": "Tcp",
-              "port": 80,
-              "intervalInSeconds": 15,
-              "numberOfProbes": 2
-            }
-          },
-          {
-            "name": "myHealthProbeHttps",
-            "properties": {
-              "protocol": "Tcp",
-              "port": 443,
-              "intervalInSeconds": 15,
-              "numberOfProbes": 2
-            }
-          }
-        ],
-        "inboundNatRules": [
-          {
-            "name": "lbinboundnatrulehttps1",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(variables('loadBalancerId'), '/frontendIPConfigurations/myFrontEnd')]"
-              },
-              "frontendPort": 40001,
-              "backendPort": 8443,
-              "enableFloatingIP": false,
-              "idleTimeoutInMinutes": 4,
-              "protocol": "Tcp",
-              "enableTcpReset": false
-            }
-          },
-          {
-            "name": "lbinboundnatrulehttps2",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(variables('loadBalancerId'), '/frontendIPConfigurations/myFrontEnd')]"
-              },
-              "frontendPort": 40002,
-              "backendPort": 8443,
-              "enableFloatingIP": false,
-              "idleTimeoutInMinutes": 4,
-              "protocol": "Tcp",
-              "enableTcpReset": false
-            }
-          },
-          {
-            "name": "lbinboundnatrulessh1",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(variables('loadBalancerId'), '/frontendIPConfigurations/myFrontEnd')]"
-              },
-              "frontendPort": 50001,
-              "backendPort": 22,
-              "enableFloatingIP": false,
-              "idleTimeoutInMinutes": 4,
-              "protocol": "Tcp",
-              "enableTcpReset": false
-            }
-          },
-          {
-            "name": "lbinboundnatrulessh2",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[concat(variables('loadBalancerId'), '/frontendIPConfigurations/myFrontEnd')]"
-              },
-              "frontendPort": 50002,
-              "backendPort": 22,
-              "enableFloatingIP": false,
-              "idleTimeoutInMinutes": 4,
-              "protocol": "Tcp",
-              "enableTcpReset": false
-            }
-          }
-        ],
-        "outboundRules": [],
-        "inboundNatPools": []
-      },
-      "dependsOn": [
-        "[parameters('LBPubIPName')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "mySecurityGroup",
-      "apiVersion": "2018-08-01",
-      "location": "[parameters('location')]",
-      "properties": {
-        "securityRules": [
-          {
-            "name": "allowManageHttp",
-            "properties": {
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "8080",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1001,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "allowManageHttps",
-            "properties": {
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "8443",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1011,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "allowSSH",
-            "properties": {
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "22",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1021,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "allowHttp",
-            "properties": {
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "80",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1031,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "allowHttps",
-            "properties": {
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "443",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1041,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          }
-        ],
-        "defaultSecurityRules": [
-          {
-            "name": "AllowVnetInBound",
-            "properties": {
-              "description": "Allow inbound traffic from all VMs in VNET",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "VirtualNetwork",
-              "access": "Allow",
-              "priority": 65000,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "AllowAzureLoadBalancerInBound",
-            "properties": {
-              "description": "Allow inbound traffic from azure load balancer",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "AzureLoadBalancer",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 65001,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "DenyAllInBound",
-            "properties": {
-              "description": "Deny all inbound traffic",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Deny",
-              "priority": 65500,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "AllowVnetOutBound",
-            "properties": {
-              "description": "Allow outbound traffic from all VMs to all VMs in VNET",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "VirtualNetwork",
-              "destinationAddressPrefix": "VirtualNetwork",
-              "access": "Allow",
-              "priority": 65000,
-              "direction": "Outbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "AllowInternetOutBound",
-            "properties": {
-              "description": "Allow outbound traffic from all VMs to Internet",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "Internet",
-              "access": "Allow",
-              "priority": 65001,
-              "direction": "Outbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "DenyAllOutBound",
-            "properties": {
-              "description": "Deny all outbound traffic",
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Deny",
-              "priority": 65500,
-              "direction": "Outbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
+            "name": "vmSize",
+            "type": "Microsoft.Compute.SizeSelector",
+            "label": "Virtual Machine Size",
+            "toolTip": "The size of virtual machine to provision.",
+            "recommendedSizes": [
+              "Standard_F2s_v2",
+              "Standard_F4s_v2",
+              "Standard_F8s_v2"
+            ],
+            "constraints": {
+              "allowedSizes": [
+                "Standard_A4",
+                "Standard_D2",
+                "Standard_D3",
+                "Standard_D4",
+                "Standard_D1_v2",
+                "Standard_D2_v2",
+                "Standard_D3_v2",
+                "Standard_D4_v2",
+                "Standard_D2_v3",
+                "Standard_D4_v3",
+                "Standard_D8_v3",
+                "Standard_D2s_v3",
+                "Standard_D4s_v3",
+                "Standard_D8s_v3",
+                "Standard_F1",
+                "Standard_F2",
+                "Standard_F4",
+                "Standard_F8",
+                "Standard_F1s",
+                "Standard_F2s",
+                "Standard_F4s",
+                "Standard_F8s",
+                "Standard_F2s_v2",
+                "Standard_F4s_v2",
+                "Standard_F8s_v2"
+              ]
+            },
+            "osPlatform": "Linux",
+            "imageReference": {
+              "publisher": "Fortinet",
+              "offer": "fortinet_fortiweb-vm_v5",
+              "sku": "fortinet_fw-vm"
+            },
+            "count": "1"
           }
         ]
       },
-      "dependsOn": []
-    },
-    {
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[parameters('virtualNetName')]",
-      "apiVersion": "2018-08-01",
-      "location": "[parameters('location')]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('vnetAddressPrefix')]"
-          ]
+      {
+        "name": "IPassign",
+        "label": "IP Assignment",
+        "subLabel": {
+          "preValidation": "Required",
+          "postValidation": "Done"
         },
-        "subnets": [
+        "bladeTitle": "IP Assignment",
+        "elements": [
           {
-            "name": "[parameters('Subnet1Name')]",
-            "properties": {
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'mySecurityGroup')]"
-              },
-              "addressPrefix": "[parameters('Subnet1Prefix')]"
+            "name": "lbPubIP",
+            "type": "Microsoft.Network.PublicIpAddressCombo",
+            "label": {
+              "publicIpAddress": "load balancer Public IP",
+              "domainNameLabel": ""
+            },
+            "toolTip": {
+              "publicIpAddress": "Public IP address for the load balancer."
+            },
+            "defaultValue": {
+              "publicIpAddressName": "LoadBalancerPubIP"
+            },
+            "options": {
+              "hideNone": true,
+              "hideDomainNameLabel": true,
+              "hideExisting": false
+            },
+            "visible": true
+          },
+          {
+            "name": "VM1PubIP",
+            "type": "Microsoft.Network.PublicIpAddressCombo",
+            "label": {
+              "publicIpAddress": "VM1 Public IP",
+              "domainNameLabel": ""
+            },
+            "toolTip": {
+              "publicIpAddress": "Public IP address for the VM1."
+            },
+            "defaultValue": {
+              "publicIpAddressName": "VM1PubIP"
+            },
+            "options": {
+              "hideNone": true,
+              "hideDomainNameLabel": true,
+              "hideExisting": false
             }
           },
           {
-            "name": "[parameters('Subnet2Name')]",
-            "properties": {
-              "addressPrefix": "[parameters('Subnet2Prefix')]"
+            "name": "VM2PubIP",
+            "type": "Microsoft.Network.PublicIpAddressCombo",
+            "label": {
+              "publicIpAddress": "VM2 Public IP",
+              "domainNameLabel": ""
+            },
+            "toolTip": {
+              "publicIpAddress": "Public IP address for the VM2."
+            },
+            "defaultValue": {
+              "publicIpAddressName": "VM2PubIP"
+            },
+            "options": {
+              "hideNone": true,
+              "hideDomainNameLabel": true,
+              "hideExisting": false
             }
           }
         ]
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/networkSecurityGroups', 'mySecurityGroup')]"
-      ],
-      "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]"
+      }
+    ],
+    "outputs": {
+      "location": "[location()]",
+      "vmNamePrefix": "[basics('namePrefix')]",
+      "imageVersion": "[basics('imageVersion')]",
+      "adminUserName": "[basics('adminUserName')]",
+      "authenticationType": "[basics('adminPasswd').authenticationType]",
+      "adminPassword": "[basics('adminPasswd').password]",
+      "sshPublicKey": "[basics('adminPasswd').sshPublicKey]",
+      "vmSku": "[steps('clusterSettingsStep').vmSize]",
+      "vnetNewOrExisting": "[steps('clusterSettingsStep').virtualNetwork.newOrExisting]",
+      "virtualNetResourceGroup": "[steps('clusterSettingsStep').virtualNetwork.resourceGroup]",
+      "virtualNetName": "[steps('clusterSettingsStep').virtualNetwork.name]",
+      "vnetAddressPrefix": "[steps('clusterSettingsStep').virtualNetwork.addressPrefix]",
+      "Subnet1Name": "[steps('clusterSettingsStep').virtualNetwork.subnets.subnet1.name]",
+      "Subnet1Prefix": "[steps('clusterSettingsStep').virtualNetwork.subnets.subnet1.addressPrefix]",
+      "Subnet2Name": "[steps('clusterSettingsStep').virtualNetwork.subnets.subnet2.name]",
+      "Subnet2Prefix": "[steps('clusterSettingsStep').virtualNetwork.subnets.subnet2.addressPrefix]",
+      "LBPubIPNewOrExisting": "[steps('IPassign').lbPubIP.newOrExistingOrNone]",
+      "LBPubIPName": "[steps('IPassign').lbPubIP.name]",
+      "LBPubIPType": "[steps('IPassign').lbPubIP.publicIPAllocationMethod]",
+      "LBPubIPSku": "[steps('IPassign').lbPubIP.sku]",
+      "LBPubIPRG": "[steps('IPassign').lbPubIP.resourceGroup]",
+      "VM1PubIPNewOrExisting": "[steps('IPassign').VM1PubIP.newOrExistingOrNone]",
+      "VM1PubIPName": "[steps('IPassign').VM1PubIP.name]",
+      "VM1PubIPType": "[steps('IPassign').VM1PubIP.publicIPAllocationMethod]",
+      "VM1PubIPSku": "[steps('IPassign').VM1PubIP.sku]",
+      "VM1PubIPRG": "[steps('IPassign').VM1PubIP.resourceGroup]",
+      "VM2PubIPNewOrExisting": "[steps('IPassign').VM2PubIP.newOrExistingOrNone]",
+      "VM2PubIPName": "[steps('IPassign').VM2PubIP.name]",
+      "VM2PubIPType": "[steps('IPassign').VM2PubIP.publicIPAllocationMethod]",
+      "VM2PubIPSku": "[steps('IPassign').VM2PubIP.sku]",
+      "VM2PubIPRG": "[steps('IPassign').VM2PubIP.resourceGroup]"
     }
-  ]
+  }
 }
