@@ -30,3 +30,9 @@ For other questions related to this project, contact [github@fortinet.com](mailt
 
 ## License
 [License](./LICENSE) © Fortinet Technologies. All rights reserved.
+
+
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsrijaallam%2Fazure-templates%2Fmain%2FFortiWeb%2FFortiWeb-SingleVM%2Fazuredeploy.json/createUIDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fsrijaallam%2Fazure-templates%2Fmain%2FFortiWeb%2FFortiWeb-HA%2FcreateUiDefinition.json" target="_blank">
+  <img src="https://aka.ms/deploytoazurebutton"/>
+</a>
+
