@@ -145,7 +145,7 @@
             },
             "defaultValue": {
               "name": "FortiWebVNet",
-              "addressPrefixSize": "/16"
+              "addressPrefixSize": "/20"
             },
             "constraints": {
               "minAddressPrefixSize": "/28"
