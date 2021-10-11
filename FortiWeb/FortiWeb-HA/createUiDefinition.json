@@ -3,16 +3,6 @@
   "handler": "Microsoft.Compute.MultiVm",
   "version": "0.1.2-preview",
   "parameters": {
-    "config": {
-      "basics": {
-        "resourceGroup": {
-          "allowExisting": true
-        }
-      }
-    },
-    "resourceTypes": [
-            "microsoft.resources/resourcegroups"
-        ],
     "basics": [
       {
         "name": "namePrefix",
@@ -145,7 +135,7 @@
             },
             "defaultValue": {
               "name": "FortiWebVNet",
-              "addressPrefixSize": "/20"
+              "addressPrefixSize": "/16"
             },
             "constraints": {
               "minAddressPrefixSize": "/28"
@@ -300,6 +290,7 @@
       }
     ],
     "outputs": {
+      "location": "[location()]",
       "vmNamePrefix": "[basics('namePrefix')]",
       "imageVersion": "[basics('imageVersion')]",
       "adminUserName": "[basics('adminUserName')]",
