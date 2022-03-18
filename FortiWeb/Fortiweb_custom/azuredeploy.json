@@ -91,7 +91,8 @@
         "defaultValue": "new",
         "allowedValues": [
           "new",
-          "existing"
+          "existing",
+          "none"
         ],
         "metadata": {
           "description": "Choose between an existing, new or no public IP for the External Azure Load Balancer"
@@ -320,9 +321,7 @@
             {
               "name": "ipconfig1",
               "properties": {
-                "publicIPAddress": {
-                  "id": "[variables('publicIPId')]"
-                },
+                "publicIPAddress": "[if(not(equals(parameters('publicIPNewOrExisting'),'none')), variables('publicIPId'), json('null'))]"
                 "subnet": {
                   "id": "[variables('subnetId')]"
                 }
