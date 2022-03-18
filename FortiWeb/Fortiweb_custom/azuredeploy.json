@@ -321,7 +321,7 @@
             {
               "name": "ipconfig1",
               "properties": {
-                "publicIPAddress": "[if(not(equals(parameters('publicIPNewOrExisting'),'none')), variables('publicIPId'), json('null'))]"
+                "publicIPAddress": "[if(not(equals(parameters('publicIPNewOrExisting'),'none')), variables('publicIPId'), json('null'))]",
                 "subnet": {
                   "id": "[variables('subnetId')]"
                 }
